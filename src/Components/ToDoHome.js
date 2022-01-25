@@ -14,7 +14,7 @@ const Home = () => {
     setInputValue("");
 };
 
-localStorage.setItem("todos", JSON.stringify([...todos, inputValue]));
+localStorage.setItem("todos", JSON.stringify([...todos]));
 
   useEffect(() => {
       const td = localStorage.getItem('todos')
