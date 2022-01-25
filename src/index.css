@@ -39,6 +39,18 @@
   cursor: pointer;
 }
 
+.edit-btn {
+  margin-left: 20px;
+  background-color: rgb(7, 158, 70);
+  color: aliceblue;
+  padding: 12px;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  width: 100px;
+  cursor: pointer;
+}
+
 .add-btn:hover {
   background: rgb(5, 170, 162);
 }

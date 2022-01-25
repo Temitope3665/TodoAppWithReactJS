@@ -1,42 +1,83 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Home = () => {
+  const [inputValue, setInputValue] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [editing, setEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
 
-    const [inputValue, setInputValue] = useState('')
-    const [todos, setTodos] = useState([])
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    inputValue === ""
+      ? alert("input must not be empty")
+      : setTodos([...todos, inputValue]);
+    setInputValue("");
+};
 
-    // const handleChange = (e) => {
-    //     setInputValue(e.target.value)
-    // }
+localStorage.setItem("todos", JSON.stringify([...todos, inputValue]));
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        inputValue === '' ? alert("input must not be empty") :
-            setTodos([...todos, inputValue])
-            setInputValue('')
-    }
+  useEffect(() => {
+      const td = localStorage.getItem('todos')
+      td === null ? setTodos(null) :
+      setTodos(JSON.parse(td))
+  }, []);
 
-    const handleDelete = index => {
-        const newTodo = todos.slice(); // use the slice method to make a copy of an array
-        newTodo.splice(index, 1)
-        setTodos(newTodo)
-    }
+  const handleDelete = (index) => {
+    const newTodo = [...todos];
+    newTodo.splice(index, 1);
+    setTodos(newTodo);
+  };
 
-    return (
-        <div className="todo-wrapper">
-            <h1 className="heading">Todo App</h1>
+  const handleEdit = (id, todo) => {
+    setEditing(true);
+    setEditIndex(id);
+    setInputValue(todo);
+  };
 
-            <input className="input-todo" type='text' value={inputValue} placeholder="Enter your todo" onChange={(e) => setInputValue(e.target.value)} />
-            <button className="add-btn" onClick={handleSubmit}>Add Todo</button>
+  const submitEdit = () => {
+    todos[editIndex] = inputValue;
+    setEditing(false);
+    setInputValue("");
+  };
 
-            {todos.map((todo, index) => (
-                <div className="todo-list" key={index}>
-                    <p>{todo}</p>
-                    <button className="delete-btn" onClick={() => handleDelete(index)}>Delete</button>
-                </div>
-            ))}
+  return (
+    <div className="todo-wrapper">
+      <h1 className="heading">Todo App</h1>
+
+      <input
+        className="input-todo"
+        type="text"
+        value={inputValue}
+        placeholder="Enter your todo"
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      {!editing && (
+        <button className="add-btn" onClick={handleSubmit}>
+          Add Todo
+        </button>
+      )}
+      {editing && (
+        <button className="edit-btn" onClick={submitEdit}>
+          Edit Todo
+        </button>
+      )}
+
+      {todos === null ? null : todos.map((todo, index) => (
+        <div
+          className="todo-list"
+          key={index}
+          onDoubleClick={() => handleEdit(index, todo)}
+        >
+          <p>{todo}</p>
+          {!editing && (
+            <button className="delete-btn" onClick={() => handleDelete(index)}>
+              Delete
+            </button>
+          )}
         </div>
-    );
-}
- 
+      ))}
+    </div>
+  );
+};
+
 export default Home;
